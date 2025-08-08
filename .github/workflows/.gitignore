@@ -1,0 +1,8 @@
+
+# Create a basic .gitignore so you don't check in build artifacts
+cat <<EOF > .gitignore
+bin/
+obj/
+wwwroot/js/site.js
+.github/workflows/
+EOF

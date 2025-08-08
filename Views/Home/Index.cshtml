@@ -1,0 +1,87 @@
+﻿@model HousePriceWeb.Models.HomeViewModel
+@{
+    ViewData["Title"] = "House Price Predictor";
+}
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="card mb-4">
+      <div class="card-header bg-secondary text-white">
+        Single‐Input Prediction
+      </div>
+      <div class="card-body">
+        <div asp-validation-summary="All" class="alert alert-danger d-none" id="single-err"></div>
+        <form asp-action="Index" method="post" enctype="multipart/form-data" id="singleForm">
+          <div class="mb-3">
+            <label asp-for="Rooms" class="form-label">Rooms</label>
+            <input asp-for="Rooms" class="form-control" />
+            <span asp-validation-for="Rooms" class="text-danger"></span>
+          </div>
+          <div class="mb-3">
+            <label asp-for="Area" class="form-label">Area (sqft)</label>
+            <input asp-for="Area" class="form-control" />
+            <span asp-validation-for="Area" class="text-danger"></span>
+          </div>
+          <div class="mb-3">
+            <label asp-for="Age" class="form-label">Age (years)</label>
+            <input asp-for="Age" class="form-control" />
+            <span asp-validation-for="Age" class="text-danger"></span>
+          </div>
+          <button type="submit" class="btn btn-primary" id="singleBtn">
+            <span id="singleSpinner" class="spinner-border spinner-border-sm me-2 d-none"></span>
+            Predict
+          </button>
+        </form>
+        @if (Model.PredictedPrice > 0)
+        {
+          <div class="alert alert-success mt-3">
+            <strong>Predicted Price:</strong> @Model.PredictedPrice:C0
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card mb-4">
+      <div class="card-header bg-secondary text-white">
+        Batch CSV Scoring
+      </div>
+      <div class="card-body">
+        <form asp-action="Index" method="post" enctype="multipart/form-data" id="batchForm">
+          <div class="mb-3">
+            <label asp-for="BatchFile" class="form-label">Upload CSV</label>
+            <input asp-for="BatchFile" type="file" accept=".csv" class="form-control" />
+          </div>
+          <button type="submit" class="btn btn-secondary" id="batchBtn">
+            <span id="batchSpinner" class="spinner-border spinner-border-sm me-2 d-none"></span>
+            Run Batch
+          </button>
+        </form>
+
+        @if (Model.BatchResults != null && Model.BatchResults.Any())
+        {
+          <h5 class="mt-4">Batch Predictions</h5>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Rooms</th><th>Area</th><th>Age</th><th>Predicted Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach (var r in Model.BatchResults)
+              {
+                <tr>
+                  <td>@r.Rooms</td>
+                  <td>@r.Area</td>
+                  <td>@r.Age</td>
+                  <td>@r.PredictedPrice:C0</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </div>
+    </div>
+  </div>
+</div>
